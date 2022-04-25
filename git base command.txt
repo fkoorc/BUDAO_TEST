@@ -1,0 +1,23 @@
+git command:
+
+git init
+
+git status
+
+git commit -m "your command"
+
+git log
+
+git add yourfile
+
+git commit -m "your command"
+
+git reset {ID} --hard
+
+git remote add {name} {code website}
+
+git remote add origin https://github.com/fkoorc/BUDAO_TEST.git
+
+git pull --rebase origin master
+
+git push -u origin master
