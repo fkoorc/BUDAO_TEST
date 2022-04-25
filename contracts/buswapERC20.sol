@@ -1,18 +1,19 @@
-pragma solidity =0.5.16;
+pragma solidity =0.8.0; //check ERC20PresetMinterPauser and modify to 0.8.0 -mike
 
-import './interfaces/IUniswapV2ERC20.sol';
+import './interfaces/IbuswapERC20.sol';
 import './libraries/SafeMath.sol';
 
-contract UniswapV2ERC20 is IUniswapV2ERC20 {
+contract buswapERC20 is IbuswapERC20 {
     using SafeMath for uint;
 
-    string public constant name = 'Uniswap V2';
-    string public constant symbol = 'UNI-V2';
-    uint8 public constant decimals = 18;
+    string public constant name = 'Buswap';
+    string public constant symbol = 'bu-swap';
+    //uint8 public constant decimals = 18; //use function define -mike
     uint  public totalSupply;
-    mapping(address => uint) public balanceOf;
+    mapping(address => uint256) public balanceOf;
     mapping(address => mapping(address => uint)) public allowance;
 
+    //learn more by https://eips.ethereum.org/EIPS/eip-721 -mike
     bytes32 public DOMAIN_SEPARATOR;
     // keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
     bytes32 public constant PERMIT_TYPEHASH = 0x6e71edae12b1b97f4d1f60370fef10105fa2faae0126114a169c64845d6126c9;
@@ -20,7 +21,7 @@ contract UniswapV2ERC20 is IUniswapV2ERC20 {
 
     event Approval(address indexed owner, address indexed spender, uint value);
     event Transfer(address indexed from, address indexed to, uint value);
-
+    
     constructor() public {
         uint chainId;
         assembly {
@@ -37,13 +38,19 @@ contract UniswapV2ERC20 is IUniswapV2ERC20 {
         );
     }
 
+    function decimals() public view virtual override returns (uint8) {
+        return 18;
+    }
+
     function _mint(address to, uint value) internal {
+        require(to != address(0), "ERC20: mint to the zero address"); // -mike
         totalSupply = totalSupply.add(value);
         balanceOf[to] = balanceOf[to].add(value);
         emit Transfer(address(0), to, value);
     }
 
     function _burn(address from, uint value) internal {
+        require(from != address(0), "ERC20: burn from the zero address"); // -mike
         balanceOf[from] = balanceOf[from].sub(value);
         totalSupply = totalSupply.sub(value);
         emit Transfer(from, address(0), value);
@@ -77,9 +84,10 @@ contract UniswapV2ERC20 is IUniswapV2ERC20 {
         _transfer(from, to, value);
         return true;
     }
-
+    
+    //learn more by https://eips.ethereum.org/EIPS/eip-721 -mike
     function permit(address owner, address spender, uint value, uint deadline, uint8 v, bytes32 r, bytes32 s) external {
-        require(deadline >= block.timestamp, 'UniswapV2: EXPIRED');
+        require(deadline >= block.timestamp, 'buswap: EXPIRED');
         bytes32 digest = keccak256(
             abi.encodePacked(
                 '\x19\x01',
@@ -88,7 +96,7 @@ contract UniswapV2ERC20 is IUniswapV2ERC20 {
             )
         );
         address recoveredAddress = ecrecover(digest, v, r, s);
-        require(recoveredAddress != address(0) && recoveredAddress == owner, 'UniswapV2: INVALID_SIGNATURE');
+        require(recoveredAddress != address(0) && recoveredAddress == owner, 'buswap: INVALID_SIGNATURE');
         _approve(owner, spender, value);
     }
 }

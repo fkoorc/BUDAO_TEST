@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\test",
+    "\\test\\shared"
   ],
-  "SelectedNode": "\\D:\\git",
+  "SelectedNode": "\\test\\UniswapV2Factory.spec.ts",
   "PreviewInSolutionExplorer": false
 }
